@@ -1,26 +1,23 @@
-
-// --- arquivo de validações
-
 module.exports = app => {
 
-    function existsOrEroor(value, meg) {
+    function existsOrError(value, msg) {
         if (!value) throw msg;
         if (Array.isArray(value) && value.length === 0) throw msg;
         if (typeof value === 'string' && !value.trim()) throw msg;
     };
     
-    function notExistsOrEroor(value, meg) {
+    function notExistsOrError(value, msg) {
         try {
-            existsOrEroor(value, msg);
-        } catch (error) {
+            existsOrError(value, msg);
+        } catch (msg) {
             return
         }
         throw msg;
     };
     
-    function equalOrErro(valueA, valueB, msg) {
+    function equalOrError(valueA, valueB, msg) {
         if (valueA !== valueB) throw msg;
     }
 
-    return { existsOrEroor, notExistsOrEroor, equalOrErro };
+    return { existsOrError, notExistsOrError, equalOrError };
 };

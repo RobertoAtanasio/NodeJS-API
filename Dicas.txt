@@ -19,6 +19,7 @@ npm install cors --save
 npm install consign --save
 npm install jsonwebtoken --save
 npm install knex --save
+npm install bcrypt --save
 		
 	Then add one of the following (adding a --save) flag:
 	npm install pg --save
@@ -90,4 +91,9 @@ Após as criações dos scripts de criação das tabelas, executar:
 	knex migrate:latest							-> executa as migrations to tipo 'up'
 	
 	knex migrate:rollback						-> desfaz a última migration executada, tipo 'down'
+	
+----------------------------------------------------------------------------------------------------------------------------------
+
+Encriptografando a senha do usuário usando o BCrypt:
+  --> npm install bcrypt --save
 	
