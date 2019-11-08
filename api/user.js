@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt-nodejs');
-const validar = require('./validation');
 
 module.exports = app => {
 
@@ -38,13 +37,17 @@ module.exports = app => {
                         throw 'E-Mail informado já existe para o usuário ' + userFromDB.id;
                     } 
                 }
-            };
-
-            if (!user.id) {
+            } else {
                 const userFromDB = await app.db('users')
                     .where({ email: user.email }).first();
                 notExistsOrError(userFromDB, 'Usuário já cadastrado');
             }
+
+            // if (!user.id) {
+            //     const userFromDB = await app.db('users')
+            //         .where({ email: user.email }).first();
+            //     notExistsOrError(userFromDB, 'Usuário já cadastrado');
+            // }
         } catch (error) {
             return res.status(400).send(error);
         }
@@ -68,6 +71,7 @@ module.exports = app => {
     }
     
     const get = (req, res) => {
+        // use o select quando se quer filtrar quais campos deve retornar
         app.db('users')
             .select('id', 'name', 'email', 'admin')
             .then( users => res.json(users) )
