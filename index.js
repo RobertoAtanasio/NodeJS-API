@@ -4,7 +4,8 @@ const db = require('./config/db');
 
 app.db = db;    // app.db é a variável de manipulação do bando de dados.
 
-consign().include('routes')
+consign()
+    .include('./config/passport.js')
     .then('./config/middlewares.js')
     .then('./api/validation.js')
     .then('./api')

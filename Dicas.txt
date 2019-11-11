@@ -20,6 +20,8 @@ npm install consign --save
 npm install jsonwebtoken --save
 npm install knex --save
 npm install bcrypt --save
+npm install passport --save
+npm install passport-jwt --save
 		
 	Then add one of the following (adding a --save) flag:
 	npm install pg --save
@@ -96,4 +98,34 @@ Após as criações dos scripts de criação das tabelas, executar:
 
 Encriptografando a senha do usuário usando o BCrypt:
   --> npm install bcrypt --save
+  
+  --> npm uninstall bcrypt --save			para desistalar
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+JWT:
+
+OBS.: Quando da criação do sistema, foi criado automaticamente o arquivo end_file que deve ser usado como modelo para a criação
+      do arquivo .env
+
+Instalar: npm install jwt-simple
+
+As seguintes imports fazem parte do auth.js:
+	const { authSecret } = require('../.env')
+	const jwt = require('jwt-simple')
+	const bcrypt = require('bcrytp-nodejs')
 	
+Protegendo a API com o Framework Passport:
+	* Aplicando o filtro nas requisições que não venham com o token válido
+	* npm install passport --save
+	* npm install passport-jwt --save
+	* Criado o arquivo config/passport.js
+	* O passportJwt obtem os dados do cabeçalho a partir do ExtractJwt
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+Validando se o usuário é Administrador:
+
+* 
+
+

@@ -20,7 +20,7 @@ module.exports = app => {
         } else {
             app.db('categories')
                 .insert(category)
-                .then( data => res.status(200).send(category))
+                .then( () => res.status(200).send(category))
                 .catch( error => res.status(500).send(error));
         }
     };
@@ -50,7 +50,7 @@ module.exports = app => {
 
             return res.status(204).send();
         } catch (error) {
-            return res.status(400).send(error);
+            return res.status(500).send(error);
         }
     };
 
@@ -97,5 +97,22 @@ module.exports = app => {
                 .catch( error => res.status(500).send(error) );
     };
 
-    return { save, remove, get, getById };
+    const toTree = (categories, tree) => {
+        if (!tree) tree = categories.filter( c => !c.parentId );
+        tree = tree.map(parentNode => {
+            const isChild = node => node.parentId == parentNode.id 
+            // cria um nova entrada no objeto de saída que é o atributo children 
+            parentNode.children = toTree(categories, categories.filter(isChild))
+            return parentNode
+        })
+        return tree
+    }
+    
+    const getTree = (req, res) => {
+        app.db('categories')
+            .then( categories => res.json(toTree(withPath(categories))))
+            .catch( erro => res.status(500).send(erro) );
+    }
+
+    return { save, remove, get, getById, getTree };
 };
