@@ -13,7 +13,7 @@ module.exports = app => {
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
     }
 
-    // Este payload fa função callback é exatamente o payload passado em auth.js
+    // Este payload da função callback é exatamente o payload passado em auth.js
     // quando se criou o tokem.
     // Se tudo ocorrer bem, chama-se a função done() passando os parâmetros: o 1o parâmetro
     // é o de erro, o 2o, o usuário.

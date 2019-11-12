@@ -22,6 +22,7 @@ npm install knex --save
 npm install bcrypt --save
 npm install passport --save
 npm install passport-jwt --save
+npm install colors --save
 		
 	Then add one of the following (adding a --save) flag:
 	npm install pg --save
@@ -124,8 +125,10 @@ Protegendo a API com o Framework Passport:
 
 ----------------------------------------------------------------------------------------------------------------------------------
 
-Validando se o usuário é Administrador:
+MongoDB:
 
-* 
+* npm install mongoose --save
+* criado arquivo config/mongodb.js
+* importar em index.js o mongodb.js
 
 

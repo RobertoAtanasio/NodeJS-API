@@ -1,8 +1,12 @@
 const app = require('express')();
 const consign = require('consign');
 const db = require('./config/db');
+const mongoose = require('mongoose');
+
+require('./config/mongodb')
 
 app.db = db;    // app.db é a variável de manipulação do bando de dados.
+app.mongoose = mongoose
 
 consign()
     .include('./config/passport.js')
