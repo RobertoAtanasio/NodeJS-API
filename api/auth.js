@@ -48,7 +48,6 @@ module.exports = app => {
         const userData = req.body || null;
         try {
             if (userData) {
-                console.log('>',userData.admin)
                 const token = jwt.decode(userdata.token, authSecret)
                 if (new Date(token.exp * 1000) > Date.now()) {
                     return res.send(true)

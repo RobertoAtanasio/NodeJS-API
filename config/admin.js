@@ -3,6 +3,7 @@
 
 module.exports = middleware => {
     return (req, res, next) => {
+        // o req.user.admin) vem do payload do token que está na requisição (auth.js)
         if (req.user.admin) {
             middleware(req, res, next) 
         } else {

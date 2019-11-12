@@ -17,6 +17,11 @@ module.exports = app => {
         const user = { ...req.body };   // gera um clone do objeto
         if (req.params.id) user.id = req.params.id; // se vier informado o id, é um update, senão, um insert
 
+        // procedimento para evitar a inclusão de usuário ADMIN por usuário não autenticado
+        // o req.user.admin) vem do payload do token que está na requisição (auth.js)
+        if(!req.originalUrl.startsWith('/users')) user.admin = false
+        if(!req.user || !req.user.admin) user.admin = false
+
         try {
             existsOrError(user.name, 'Nome não informado');
             existsOrError(user.email, 'E-Mail não informado');
@@ -60,6 +65,7 @@ module.exports = app => {
             app.db('users')
                 .update(user)
                 .where({ id: user.id })
+                .whereNull('deletedAt')
                 .then( () => res.status(204).send() )
                 .catch( erro => res.status(500).send(erro) );
         } else {
@@ -74,19 +80,40 @@ module.exports = app => {
         // use o select quando se quer filtrar quais campos deve retornar
         app.db('users')
             .select('id', 'name', 'email', 'admin')
+            .whereNull('deletedAt')
             .then( users => res.json(users) )
             .catch( erro => res.status(500).send(erro));
     };
     
     const getById = (req, res) => {
-        const id = req.params.id;
         app.db('users')
             .select('id', 'name', 'email', 'admin')
-            .where({ id })
+            .where({ id: req.params.id })
+            .whereNull('deletedAt')
             .first()
-            .then( users => res.json(users) )
-            .catch( erro => res.status(500).send(erro));
-    };
+            .then(user => res.json(user))
+            .catch(err => res.status(500).send(err))
+    }
 
-    return { save, get, getById }
+    const remove = async (req, res) => {
+        try {
+            const articles = await app.db('articles')
+                .where ({ 'userId': req.params.id });
+
+            notExistsOrError(articles, 'Usuários possui artigos.');
+            
+            const rowsUpdated = await app.db('users')
+                .update({ 'deletedAt': new Date() })
+                .where({ id: req.params.id })
+                .catch( error => res.status(500).send(error) );
+                
+            existsOrError(rowsUpdated, 'Usuário não encontrado.' );
+
+            return res.status(204).send();
+        } catch (error) {
+            return res.status(403).send(error);
+        }
+    }
+
+    return { save, get, getById, remove }
 }

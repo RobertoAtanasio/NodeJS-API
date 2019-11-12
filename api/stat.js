@@ -6,6 +6,7 @@ module.exports = app => {
         createdAt: Date
     })
 
+    // sem filtro, sem selecionr atributo, apenas um sort
     const get = (req, res) => {
         Stat.findOne({}, {}, { sort: { 'createdAt' : -1 } })
             .then(stat => {

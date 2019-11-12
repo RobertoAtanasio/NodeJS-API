@@ -23,6 +23,7 @@ npm install bcrypt --save
 npm install passport --save
 npm install passport-jwt --save
 npm install colors --save
+npm install node-schedule --save
 		
 	Then add one of the following (adding a --save) flag:
 	npm install pg --save
@@ -131,4 +132,40 @@ MongoDB:
 * criado arquivo config/mongodb.js
 * importar em index.js o mongodb.js
 
+----------------------------------------------------------------------------------------------------------------------------------
 
+Integrando Banco com Schedule:
+
+* Implementaremos um agendador.
+* criaremos uma pasta: schedule
+* criar arquivo statsSchedule.js
+* instalar: npm install node-schedule --save	--> será usado na sincronização dos dados entre os bancos de dados
+* 
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+Exclusão de Usuário via migrations, faca:
+
+Para criar nov campo na tabela Users, faça: 
+* criar a migration: 
+	knex init
+	knex migrate:make add_deleted_at_table_users	-> será criado a pasta 'migration' com um arquivo tipo: 20191112121802_add_deleted_at_table_users.js
+
+* Após as criações dos scripts de criação das tabelas, executar: 
+	knex migrate:latest				-> executa as migrations to tipo 'up'
+	
+	knex migrate:rollback			-> desfaz a última migration executada, tipo 'down'
+	
+----------------------------------------------------------------------------------------------------------------------------------
+
+module.exports = {
+    authSecret: 'abcdefGHIJKLM123456',
+    dbPostgre: {
+        host: '127.0.0.1',
+        port: 5432,
+        database: 'knowledge',
+        user: 'postgres',
+        password: 'postgre'
+    },
+    urlMongoDb: 'mongodb+srv://usuario_admin:egito001@clusterapi-hto5v.mongodb.net/test?retryWrites=true&w=majority'
+}
