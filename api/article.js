@@ -48,9 +48,10 @@ module.exports = app => {
         }
     }
 
-    const limit = 10;
+    const limit = 1;
     const get = async (req, res) => {
-        const page = req.query.page || 1;
+        let page = req.query.page || 1;
+        page = page <= 0 ? 1 : page;
         const result = await app.db('articles').count('id').first();
         const count = parseInt(result.count);
 

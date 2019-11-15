@@ -2,7 +2,21 @@ module.exports = app => {
     const { existsOrError, notExistsOrError } = app.api.validation;
 
     const save = (req, res) => {
-        const category = { ...req.body };
+        // Modelo de entrada
+        // {
+        //     "id": "savvsaewe",           no insert não tem o id
+        //     "name": "Pai apenas 2",
+        //     "parentId": null
+        // }
+
+        // const category = { ...req.body };
+        // da forma abaixo, garante-se que apenas os campos necessários farão parte
+        const category = { 
+            id: req.body.id,
+            name: req.body.name,
+            parentId: req.body.parentId
+         };
+
         if (req.params.id) category.id = req.params.id;
 
         try {

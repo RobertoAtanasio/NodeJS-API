@@ -29,11 +29,35 @@ module.exports = app => {
             existsOrError(user.confirmpassword, 'Confirmação Senha não informada');
             equalOrError(user.password, user.confirmpassword, 'Senhas não conferem');
 
+            // let userFromDB
+            // if (user.id) {
+            //     userFromDB = await app.db('users')
+            //         .where({ id: user.id }).first();
+            // }
+
+            // if (user.id) {
+            //     if ((user.password === undefined && user.confirmpassword === undefined) ||
+            //         (user.password === null && user.confirmpassword === null) || 
+            //         (user.password === '' && user.confirmpassword === '')) {
+            //         user.password = userFromDB.password;
+            //         user.confirmpassword = user.password;
+            //         console.log('Não Consistir senha...', user.password);
+            //     } else {
+            //         console.log('Consistir senha...');
+            //         existsOrError(user.password, 'Senha não informada');
+            //         existsOrError(user.confirmpassword, 'Confirmação Senha não informada');
+            //         equalOrError(user.password, user.confirmpassword, 'Senhas não conferem');
+            //     }
+            // } else {
+            //     existsOrError(user.password, 'Senha não informada');
+            //     existsOrError(user.confirmpassword, 'Confirmação Senha não informada');
+            //     equalOrError(user.password, user.confirmpassword, 'Senhas não conferem');
+            // } 
+
             if (user.id) {
                 const userFromDB = await app.db('users')
                     .where({ id: user.id }).first();
-                console.log(user.email);
-                console.log(userFromDB.email);
+                    
                 if (user.email !== userFromDB.email) {
                     // Verificar se o novo email existe
                     const userFromDB = await app.db('users')
@@ -48,11 +72,6 @@ module.exports = app => {
                 notExistsOrError(userFromDB, 'Usuário já cadastrado');
             }
 
-            // if (!user.id) {
-            //     const userFromDB = await app.db('users')
-            //         .where({ email: user.email }).first();
-            //     notExistsOrError(userFromDB, 'Usuário já cadastrado');
-            // }
         } catch (error) {
             return res.status(400).send(error);
         }
