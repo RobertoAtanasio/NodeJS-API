@@ -1,4 +1,5 @@
 module.exports = app => {
+    // modelo do BD Mongo
     const Stat = app.mongoose.model('Stat', {
         users: Number,
         categories: Number,
@@ -6,7 +7,7 @@ module.exports = app => {
         createdAt: Date
     })
 
-    // sem filtro, sem selecionr atributo, apenas um sort
+    // sem filtro, sem selecionar atributo, apenas um sort em ordem descendente por createdAt
     const get = (req, res) => {
         Stat.findOne({}, {}, { sort: { 'createdAt' : -1 } })
             .then(stat => {

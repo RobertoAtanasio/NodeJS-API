@@ -169,3 +169,5 @@ module.exports = {
     },
     urlMongoDb: 'mongodb+srv://usuario_admin:egito001@clusterapi-hto5v.mongodb.net/test?retryWrites=true&w=majority'
 }
+
+----------------------------------------------------------------------------------------------------------------------------------

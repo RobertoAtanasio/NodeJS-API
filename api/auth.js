@@ -48,12 +48,13 @@ module.exports = app => {
         const userData = req.body || null;
         try {
             if (userData) {
-                const token = jwt.decode(userdata.token, authSecret)
+                const token = jwt.decode(userData.token, authSecret)
                 if (new Date(token.exp * 1000) > Date.now()) {
                     return res.send(true)
                 }
             }
         } catch (error) {
+            console.log('Houve erro....')
             // problema com o token            
         }
         return res.send(false);

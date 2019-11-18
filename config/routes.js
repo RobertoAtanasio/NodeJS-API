@@ -1,14 +1,17 @@
 const admin = require ('./admin')
 
-// api -> pasta; user -> arquivo.js; save -> método dentro de user
+// Exemplo: .post(admin(app.api.user.save)), onde:
+//      api -> pasta; user -> arquivo.js; save -> método dentro de user
 // Acesso disponível devido ao consign em index.js
+
+// As validações do Token via passport foram passadas via consign em index.js
 
 module.exports = app => {
 
     // Serão as 3 únicas URLS que não estarão sejeitas às validaçoes do tpken.
     app.post('/signup', app.api.user.save);
     app.post('/signin', app.api.auth.signin);
-    app.post('/validateTpken', app.api.auth.validateTpken);
+    app.post('/validateToken', app.api.auth.validateTpken);
 
     // Todas as URLs abaixo estarão sujeitas às validações do token.
     app.route('/users')
