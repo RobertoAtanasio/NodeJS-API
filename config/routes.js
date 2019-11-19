@@ -11,7 +11,8 @@ module.exports = app => {
     // Serão as 3 únicas URLS que não estarão sejeitas às validaçoes do tpken.
     app.post('/signup', app.api.user.save);
     app.post('/signin', app.api.auth.signin);
-    app.post('/validateToken', app.api.auth.validateTpken);
+    app.post('/validateToken', app.api.auth.validateToken);
+    app.post('/validateAdmin', app.api.auth.validateAdmin);
 
     // Todas as URLs abaixo estarão sujeitas às validações do token.
     app.route('/users')

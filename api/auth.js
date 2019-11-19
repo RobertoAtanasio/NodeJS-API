@@ -35,7 +35,8 @@ module.exports = app => {
             email: user.email,
             admin: user.admin,
             iat: now,
-            exp: now + (60 * 60 * 24 * 3)
+            exp: now + (60 * 60 * 24 * 1)
+            // exp: now + 10
         }
 
         return res.json({
@@ -44,7 +45,7 @@ module.exports = app => {
         })
     }
 
-    const validateTpken = async (req, res) => {
+    const validateToken = async (req, res) => {
         const userData = req.body || null;
         try {
             if (userData) {
@@ -54,11 +55,25 @@ module.exports = app => {
                 }
             }
         } catch (error) {
-            console.log('Houve erro....')
             // problema com o token            
         }
         return res.send(false);
     }
 
-    return { signin, validateTpken }
+    const validateAdmin = async (req, res) => {
+        const userData = req.body || null;
+        try {
+            if (userData) {
+                const token = jwt.decode(userData.token, authSecret)
+                if (token.admin) {
+                    return res.send(true)
+                }
+            }
+        } catch (error) {
+            // problema com o token            
+        }
+        return res.send(false);
+    }
+
+    return { signin, validateToken, validateAdmin }
 }
