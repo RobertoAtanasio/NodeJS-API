@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
 require('colors');
+const mongoose = require('mongoose')
 const { urlMongoDb } = require('../.env')   // obter a string de conexão do banco
 
 const options = { 

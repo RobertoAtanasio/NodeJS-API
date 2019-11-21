@@ -24,6 +24,8 @@ npm install passport --save
 npm install passport-jwt --save
 npm install colors --save
 npm install node-schedule --save
+
+npm install http-errors --save
 		
 	Then add one of the following (adding a --save) flag:
 	npm install pg --save
@@ -171,3 +173,163 @@ module.exports = {
 }
 
 ----------------------------------------------------------------------------------------------------------------------------------
+
+COMANDOS MONGODB:
+
+C:\mongo\bin> mongod --dbpath C:\mongo\data
+c:\mongo\bin> mongo
+
+show databases
+use workshop
+show collections
+
+db.customers.insert({ nome: "Luiz", idade: 29 })
+db.customers.find()
+
+custArray = [{ nome : "Fernando", idade : 29 }, { nome : "Teste", "uf" : "RS" }]
+db.customers.insert(custArray)
+db.customers.find()
+
+db.customers.find().pretty()
+
+db.customers.find({uf: "RS"})									--> listar documentos com uf = 'RS'
+
+db.customers.find({nome: { $regex: /a/ }})						--> listar documentos que têm a letra 'a'
+
+db.customers.find({idade: {$gte: 18}})							--> listar documentos com idade >= 18
+db.customers.find({nome: "Luiz", idade: {$gte: 18}})
+db.customers.find({nome: { $regex: /a/ }, idade: {$gte: 18}})
+
+Outros operadores que você pode usar junto ao filtro do find são: 
+	$e: 	exatamente igual (=) 
+	$ne: 	diferente (<> ou !=) 
+	$gt: 	maior do que (>) 
+	$lt: 	menor do que (<) 
+	$lte: 	menor ou igual a (<=)
+	$in: 	o valor está contido em um array de possibilidades, como em um OU. Ex: {idade: {$in: [10,12] }} 
+	$all: 	MongoDB permite campos com arrays. Ex: { tags: ["NodeJS", "MongoDB"] }. Com esse operador, 
+			você compara se seu campo multivalorado possui todos os valores de um array específico. 
+			Ex: {tags: {$all: ["NodeJS", "Android"]}}
+	
+
+Duarte, Luiz. Node.js e Microservices: Um Guia Prático . LuizTools. Edição do Kindle. 
+
+db.customers.find().skip(1).limit(10)							--> retorna 10 itens e ignora o primeiro
+
+db.customers.find().sort({idade: 1})							--> ordena pela idade (1 = asc; -1 desc)
+
+db.customers.updateOne({_id: ObjectId("59ab46e433959e2724be2cbd")}, {$set: {idade: 28}})
+																--> pesquisa peli id e atualiza apenas a idade
+																--> note que usei uma função ObjectId para converter, 
+																	pois esse valor não é uma string.
+																--> pode-se usar null para limpar um campo
+
+Outros operadores com update:
+	$unset: 	remove o respectivo campo do documento; 
+	$inc: 		incrementa o valor original do campo com o valor especificado;
+	$mul: 		multiplica o valor original do campo com o valor especificado; 
+	$rename: 	muda o nome do campo para o nome especificado;
+
+
+db.customers.updateOne({nome: "LuizTools"}, {nome: "LuizTools", uf: "RS"}, {upsert: true}) 
+
+--> Um upsert é um update como qualquer outro, ou seja, vai atualizar o documento que atender ao filtro passado 
+	como primeiro parâmetro, porém, se não existir nenhum documento com o respectivo filtro, ele será inserido, 
+	como se fosse um insert.
+
+db.customers.delete({nome: "Luiz"})		--> exclcuir nome = "Luiz"
+
+Instalação do MongoDB:
+
+Opção 1:
+--------
+
+*	npm install mongodb
+*	Criar o arquivo mongodb.js		
+	--> Digitar (aqui estamos sem usuário e senha no banco)
+	--> o objeto conexão retornado será armazenado em uma variável global para uso em todo o sistema.
+
+	const mongoClient = require("mongodb").MongoClient
+	
+	mongoClient.connect("mongodb://localhost:27017/workshop")
+				.then(conn => global.conn = conn.db("workshop"))
+				.catch(err => console.log(err))
+	
+	function findAll(callback){  
+		global.conn.collection("customers").find({}).toArray(callback);
+	}
+	
+	--> Nesta função 'findAll', esperamos uma função de callback por parâmetro que será executada quando a 
+		consulta no Mongo terminar. Isso porque as consultas no Mongo são assíncronas e o único jeito de 
+		conseguir saber quando ela terminou é executando um callback. A consulta aqui é bem direta: usamos 
+		a conexão global conn para navegar até a collection de customers e fazer um find sem filtro algum. 
+		O resultado desse find é um cursor, então usamos o toArray para convertê-lo para um array e quando 
+		terminar, chamamos o callback para receber o retorno.
+
+	
+	module.exports = { findAll }
+	
+*	No arquivo de configuração, faça:
+
+	const global.db = require('../db')
+
+*	Nos arquivo de rotas de acesso da API, inclua:
+
+	-->
+	
+	/* GET home page. */
+	router.get('/', function(req, res) {
+		global.db.findAll((e, docs) => {
+			  if(e) { return console.log(e); }
+			  res.render('index', { docs });
+		  })
+	})
+
+	--> router.get define a rota que trata essas requisições com o verbo GET. Quando recebemos um GET /, 
+		a função de callback dessa rota é disparada e com isso usamos o findAll. Por parâmetro passamos 
+		a função callback que será executada quando a consulta terminar, exibindo um erro (e) ou 
+		renderizando a view index com o array de documentos (docs) como model.
+
+
+Opção 2:
+--------
+
+*	npm install mongoose
+*	Criar o arquivo mongodb.js
+*	digitar:
+
+	const mongoose = require('mongoose')
+	const { urlMongoDb } = require('../.env')   // obter a string de conexão do banco
+
+	const options = { 
+		reconnectTries: Number.MAX_VALUE, 
+		reconnectInterval: 500, 
+		poolSize: 5, 
+		useNewUrlParser: true 
+	}
+	mongoose.connect(urlMongoDb, options)
+		.then(c => {
+			console.log('Aplicação conectada ao Banco de Dados MongoDB'.green);
+		})
+		.catch(e => {
+			const msg = 'ERRO! Não foi possível conectar com o MongoDB!';
+			console.log(msg.red);
+		});
+		
+*	Conteúdo do arquivo .env com a URL do mongoDB Atlas:
+
+	module.exports = {
+		:
+		:,
+		urlMongoDb: 'mongodb+srv://usuario_admin:<aqui a senha>@clusterapi-hto5v.mongodb.net/test?retryWrites=true&w=majority'
+	}
+
+	mongoose.connection.on( 'disconnected', () => {
+		console.log('Banco de dados desconectado');
+	});
+
+
+
+
+
+
