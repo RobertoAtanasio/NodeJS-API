@@ -191,6 +191,7 @@ db.customers.insert(custArray)
 db.customers.find()
 
 db.customers.find().pretty()
+db.getCollection("customers").find({}).pretty();
 
 db.customers.find({uf: "RS"})									--> listar documentos com uf = 'RS'
 

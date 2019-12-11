@@ -114,6 +114,7 @@ module.exports = app => {
             .catch(err => res.status(500).send(err))
     }
 
+    // Aqui está se usando uma delação lógica. O registro ainda permanece na base!
     const remove = async (req, res) => {
         try {
             const articles = await app.db('articles')

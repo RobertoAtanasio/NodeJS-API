@@ -13,7 +13,7 @@ module.exports = app => {
             .first();
 
         if (!user) {
-            return res.status(400).send('Usuário nap encontrado');
+            return res.status(400).send('Usuário não encontrado');
         }
 
         const isMatch = bcrypt.compareSync(req.body.password, user.password);
@@ -38,6 +38,8 @@ module.exports = app => {
             exp: now + (60 * 60 * 24 * 1)
             // exp: now + 10
         }
+
+        console.log({...payload, token: jwt.encode(payload, authSecret)});
 
         return res.json({
             ...payload,
