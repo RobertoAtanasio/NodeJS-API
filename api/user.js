@@ -95,12 +95,19 @@ module.exports = app => {
         }
     }
     
-    const get = (req, res) => {
+    const limit = 4;
+    const get = async (req, res) => {
+        let page = req.query.page || 1;
+        page = page <= 0 ? 1 : page;
+        const result = await app.db('users').count('id').first();
+        const count = parseInt(result.count);
+
         // use o select quando se quer filtrar quais campos deve retornar
         app.db('users')
             .select('id', 'name', 'email', 'admin')
+            .limit(limit).offset(page * limit - limit)
             .whereNull('deletedAt')
-            .then( users => res.json(users) )
+            .then( users => res.json({ data: users, count, limit }))
             .catch( erro => res.status(500).send(erro));
     };
     

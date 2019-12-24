@@ -97,9 +97,21 @@ module.exports = app => {
         return categoryWithPath;
     }
 
-    const get = (req, res) => {
+    const limit = 4;
+    const get = async (req, res) => {
+        let page = req.query.page || 1;
+        page = page <= 0 ? 1 : page;
+        const result = await app.db('categories').count('id').first();
+        const count = parseInt(result.count);
+
+        // app.db('categories')
+        //     .then( categ => res.json(withPath(categ)) )
+        //     .catch( erro => res.status(500).send(erro));
         app.db('categories')
-            .then( data => res.json(withPath(data)) )
+            .limit(limit).offset(page * limit - limit)
+            .then( categ => {
+                return res.json( {data: withPath(categ), count, limit}) 
+            })
             .catch( erro => res.status(500).send(erro));
     };
     
