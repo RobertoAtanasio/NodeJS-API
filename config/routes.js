@@ -20,6 +20,10 @@ module.exports = app => {
         .post(admin(app.api.user.save))
         .get(admin(app.api.user.get));
 
+    app.route('/users/all')
+        .all(app.config.passport.autheticate())
+        .get(admin(app.api.user.getAll));
+
     app.route('/users/:id')
         .all(app.config.passport.autheticate())
         .put(admin(app.api.user.save))
@@ -30,6 +34,10 @@ module.exports = app => {
         .all(app.config.passport.autheticate())
         .get(admin(app.api.category.get))
         .post(admin(app.api.category.save));
+
+    app.route('/categories/all')
+        .all(app.config.passport.autheticate())
+        .get(admin(app.api.category.getAll));
 
     // Cuidado com a ordem! Tem que vir antes de '/categories/:id' senão o express vai interpretar
     // qua a palavre tree é o parâmetro :id

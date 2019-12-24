@@ -99,8 +99,10 @@ module.exports = app => {
     const get = async (req, res) => {
         let page = req.query.page || 1;
         page = page <= 0 ? 1 : page;
-        const result = await app.db('users').count('id').first();
+        const result = await app.db('users').count('id').first().whereNull('deletedAt');
         const count = parseInt(result.count);
+
+        console.log('Quantidade de usuários: ', count, page * limit - limit);
 
         // use o select quando se quer filtrar quais campos deve retornar
         app.db('users')
@@ -108,6 +110,15 @@ module.exports = app => {
             .limit(limit).offset(page * limit - limit)
             .whereNull('deletedAt')
             .then( users => res.json({ data: users, count, limit }))
+            .catch( erro => res.status(500).send(erro));
+    };
+
+    const getAll = async (req, res) => {
+        // use o select quando se quer filtrar quais campos deve retornar
+        app.db('users')
+            .select('id', 'name', 'email', 'admin')
+            .whereNull('deletedAt')
+            .then( users => res.json(users) )
             .catch( erro => res.status(500).send(erro));
     };
     
@@ -142,5 +153,5 @@ module.exports = app => {
         }
     }
 
-    return { save, get, getById, remove }
+    return { save, get, getAll, getById, remove }
 }

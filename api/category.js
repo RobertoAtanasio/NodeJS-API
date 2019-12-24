@@ -114,6 +114,12 @@ module.exports = app => {
             })
             .catch( erro => res.status(500).send(erro));
     };
+
+    const getAll = async (req, res) => {
+        app.db('categories')
+            .then( categ => res.json(withPath(categ)) )
+            .catch( erro => res.status(500).send(erro));
+    };
     
     const getById = async (req, res) => {
         const category = await app.db('categories')
@@ -140,5 +146,5 @@ module.exports = app => {
             .catch( erro => res.status(500).send(erro) );
     }
 
-    return { save, remove, get, getById, getTree };
+    return { save, remove, get, getAll, getById, getTree };
 };
