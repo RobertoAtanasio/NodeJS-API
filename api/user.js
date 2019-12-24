@@ -102,8 +102,6 @@ module.exports = app => {
         const result = await app.db('users').count('id').first().whereNull('deletedAt');
         const count = parseInt(result.count);
 
-        console.log('Quantidade de usuários: ', count, page * limit - limit);
-
         // use o select quando se quer filtrar quais campos deve retornar
         app.db('users')
             .select('id', 'name', 'email', 'admin')
