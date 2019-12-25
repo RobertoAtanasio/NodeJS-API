@@ -39,7 +39,7 @@ module.exports = app => {
             // exp: now + 10
         }
 
-        console.log({...payload, token: jwt.encode(payload, authSecret)});
+        // console.log({...payload, token: jwt.encode(payload, authSecret)});
 
         return res.json({
             ...payload,
@@ -48,18 +48,24 @@ module.exports = app => {
     }
 
     const validateToken = async (req, res) => {
-        const userData = req.body || null;
-        try {
-            if (userData) {
-                const token = jwt.decode(userData.token, authSecret)
-                if (new Date(token.exp * 1000) > Date.now()) {
-                    return res.send(true)
+
+        // Obs.: Coloquei o setTimeout para apenas simular um tempo de espera. Não é necessário.
+        // setTimeout( function() { 
+            const userData = req.body || null;
+            try {
+                if (userData) {
+                    const token = jwt.decode(userData.token, authSecret)
+                    if (new Date(token.exp * 1000) > Date.now()) {
+                        return res.send(true)
+                    }
                 }
+            } catch (error) {
+                // problema com o token            
             }
-        } catch (error) {
-            // problema com o token            
-        }
-        return res.send(false);
+            return res.send(false);
+        // }, 1000);
+
+        
     }
 
     const validateAdmin = async (req, res) => {
